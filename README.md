@@ -55,29 +55,6 @@ Le dépôt contient quelques exemples pour vous aider à démarrer :
 
 Vous pouvez aussi explorer et utiliser les différents modules (calculators, classes, factories, services, utils) pour développer vos propres applications.
 
-Configuration
--------------
-Le fichier "settings.py" contient des paramètres de configuration qui peuvent être adaptés à vos besoins. N’hésitez pas à le modifier en fonction de votre environnement ou des spécificités de votre projet.
-
-Contribution
-------------
-Les contributions sont les bienvenues ! Pour contribuer à l’amélioration de la bibliothèque, veuillez suivre les étapes ci-dessous :
-
-1. Forker le dépôt.
-2. Créer une branche pour votre fonctionnalité :
-   
-       git checkout -b feature/nouvelle-fonctionnalite
-
-3. Commiter vos modifications :
-   
-       git commit -m "Ajout de la nouvelle fonctionnalité"
-
-4. Pousser votre branche :
-   
-       git push origin feature/nouvelle-fonctionnalite
-
-5. Ouvrir une Pull Request.
-
 Licence
 -------
 Vérifiez le fichier de licence (s’il existe) pour connaître les conditions d’utilisation et de distribution du projet. Si aucun fichier de licence n’est présent, merci de vous renseigner auprès de l’auteur du projet.
