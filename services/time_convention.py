@@ -13,7 +13,8 @@ class AbstractTimeConventionService(Service, ABC):
     def year_count(self, bond_position : BondPositionCalculator, from_dates: np.ndarray, to_dates: np.ndarray):
         ...
 
-class TimeConventionActActService:
+
+class TimeConventionActActISDAService:
     """
     An optimized version of your Act/Act day count.
     """
@@ -32,18 +33,18 @@ class TimeConventionActActService:
         # 3. Compute years counts (eg. 12-06-2007 -> 28-09-2019)
         # a. Start :  12-06-2007 to 1-1-2008
         day_count_start = from_years_up.astype('datetime64[D]') - from_dates.astype('datetime64[D]')
-        year_count_start = day_count_start.astype(float) / np.where((1970 + from_years_up.astype(int)-1) % 4 == 0, 366.0, 365.0)
+        year_count_start = day_count_start.astype(float) / np.where(_is_leap_year(from_years_up - 1), 366.0, 365.0)
 
         # b. Middle :  1-1-2008 to 1-1-2019
         year_count_middle = (to_years_down - from_years_up).astype(float)
 
         # c. End :  1-1-2019 to 28-09-2019
         day_count_end = to_dates.astype('datetime64[D]') - to_years_down.astype('datetime64[D]')  
-        year_count_end = day_count_end.astype(float) / np.where((1970 + to_years_down.astype(int)) % 4 == 0, 366.0, 365.0)
+        year_count_end = day_count_end.astype(float) / np.where(_is_leap_year(to_years_down), 366.0, 365.0)
 
         return year_count_start + year_count_middle + year_count_end
 
-class TimeConventionActActISDAService(AbstractTimeConventionService):
+class TimeConventionActActICMAService(AbstractTimeConventionService):
     def __init__(self):
         self.time_convention_service_helper = TimeConventionExact365Service()
         self._frequencies_allowed = [0.5, 1, 2, 4, 12] # nb coupons per year
@@ -93,21 +94,7 @@ class TimeConventionActActISDAService(AbstractTimeConventionService):
 
 
         return year_count
-        # # 3. Compute years counts (eg. 12-06-2007 -> 28-09-2019)
-        # # a. Start :  12-06-2007 to 1-1-2008
-        # day_count_start = from_years_up.astype('datetime64[D]') - from_dates.astype('datetime64[D]')
-        # year_count_start = day_count_start.astype(float) / np.where((1970 + from_years_up.astype(int)-1) % 4 == 0, 366.0, 365.0)
 
-        # # b. Middle :  1-1-2008 to 1-1-2019
-        # year_count_middle = (to_years_down - from_years_up).astype(float)
-        # # print(year_count_middle)
-
-        # # c. End :  1-1-2019 to 28-09-2019
-        # day_count_end = to_dates.astype('datetime64[D]') - to_years_down.astype('datetime64[D]')  
-        # year_count_end = day_count_end.astype(float) / np.where((1970 + to_years_down.astype(int)) % 4 == 0, 366.0, 365.0)
-
-        # # print("End", day_count_end, year_count_end)
-        # return year_count_start + year_count_middle + year_count_end
 
 class TimeConvention30360Service(AbstractTimeConventionService):
     def year_count(self, bond_position : BondPositionCalculator, from_dates: np.ndarray, to_dates: np.ndarray):
@@ -173,3 +160,13 @@ class Numerator30E(Numerator30):
         from_dates = np.where(NumpyDateUtils.get_days(from_dates) == 31, from_dates - np.timedelta64(1, "D"), from_dates)
         to_dates = np.where(NumpyDateUtils.get_days(to_dates) == 31, to_dates - np.timedelta64(1, "D"), to_dates)
         return super().day_count(from_dates, to_dates)
+
+
+def _is_leap_year(dates):
+    dates = dates.astype("datetime64[Y]")
+    years = (1970 + dates.astype(int))
+    return (
+        ((years % 4 == 0) & (years % 100 != 0))
+        |
+        (years % 400 == 0)
+    )

@@ -21,7 +21,7 @@ from factories.bond.coupon import CouponFactory
 # Bond Parameters
 emission_date = datetime.datetime(2020, 1, 1)
 maturity_date = datetime.datetime(2030, 1, 1)
-time_convention = TimeConvention.ACT_ACT
+time_convention = TimeConvention.ACT_ACT_ICMA
 
 coupons = CouponFactory().create_coupons(coupon_rate= 5, emission_date= emission_date, maturity_date=maturity_date, frequency=CouponFactory.Frequency.YEARLY)
 redemptions = Cashflows(dates = [maturity_date], amounts= [100])

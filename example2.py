@@ -19,11 +19,11 @@ from factories.bond.coupon import CouponFactory
 
 
 
-computation_date = datetime.datetime(2000, 5, 17)
+computation_date = datetime.datetime(2001, 5, 17)
 # Bond Parameters
 emission_date = datetime.datetime(1999, 7, 25)
 maturity_date = datetime.datetime(2029, 7, 25)
-time_convention = TimeConvention.ACT_ACT_ISDA
+time_convention = TimeConvention.ACT_ACT_ICMA
 coupon_frequency = CouponFactory.Frequency.YEARLY
 inflation_index = "ICP"
 
@@ -41,8 +41,7 @@ coupons = CouponFactory().create_coupons(
     emission_date= emission_date,
     maturity_date=maturity_date,
     frequency=coupon_frequency,
-    adjust_coupons=False,
-    time_convention= time_convention
+    adjust_coupons=False
 )
 
 redemptions = Cashflows(dates = [maturity_date], amounts= [100])
@@ -70,7 +69,8 @@ bond_position = BondPosition(
 
 bond_position_calculator = factory.create_bond_position_calculator(bond_position=bond_position)
 bond_position_calculator.bond.inflation_coefficients = {
-    acquisition_date : 1.008665031
+    acquisition_date : 1.008665031,
+    computation_date : 1.008665031
 }
 
 amortization = bond_position_calculator.compute_amortization(date = computation_date)
@@ -85,4 +85,3 @@ print(f"Yield Rate : {100*yield_rate:0.6f}%")
 
 amortization_profile.plot(color = "b")
 plt.show()
-

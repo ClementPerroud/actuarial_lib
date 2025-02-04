@@ -6,11 +6,11 @@ from dateutil.relativedelta import relativedelta
 from classes.cashflows import Cashflows
 from classes.time_convention import TimeConvention
 from calculators.bond_position import BondPositionCalculator
-from services.time_convention import AbstractTimeConventionService, TimeConventionActActISDAService
+from services.time_convention import AbstractTimeConventionService, TimeConventionActActICMAService
 from factories.time_convention import TimeConventionFactory
 
 class CouponFactory:
-    _excluded_time_convention = [TimeConventionActActISDAService]
+    _excluded_time_convention = [TimeConventionActActICMAService]
     class Frequency(Enum):
         YEARLY = relativedelta(months = 12)
         HALF_YEARLY = relativedelta(months = 6)
@@ -29,6 +29,7 @@ class CouponFactory:
             to_dates = np.datetime64(date)
         ) 
         return real_year_count / theorical_year_count
+
     def create_coupons(self,
             emission_date : datetime.datetime,
             maturity_date: datetime,
@@ -40,10 +41,9 @@ class CouponFactory:
             time_convention : TimeConvention = None
         ):
         if (adjust_coupons or adjust_first_coupon) and time_convention is None: raise ValueError("Please provite a time_convention when using adjust_coupons = True or adjust_first_coupon = True")
-        if isinstance(time_convention, TimeConvention):
-            time_convention = self.time_convention_factory.create_time_convention_service(time_convention=time_convention)
+        if isinstance(time_convention, TimeConvention): time_convention = self.time_convention_factory.create_time_convention_service(time_convention=time_convention)
+        if time_convention is not None and any([isinstance(time_convention, tc_class) for tc_class in self._excluded_time_convention]): raise ValueError(f"Can not use {time_convention.__class__.__name__}")
         
-        if time_convention is not None and time_convention in self._excluded_time_convention: raise ValueError(f"Can not use {time_convention}")
         coupon_dates = []
         coupon_amounts = []
         i = 0
