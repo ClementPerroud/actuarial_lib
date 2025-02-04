@@ -38,6 +38,7 @@ class Cashflows:
     def __sub__(self, other): return Cashflows._create(parent = self, data = self.data.__neg__(other))
     def __sub__(self, other): return Cashflows._create(parent = self, data = self.data.__sub__(other))
     def __truediv__(self, other): return Cashflows._create(parent = self, data = self.data.__truediv__(other))
+    def __len__(self): return self.data.__len__()
 
     def __add__(self, other):
         """Combine two Cashflows instances and return a new instance with sorted and grouped data."""

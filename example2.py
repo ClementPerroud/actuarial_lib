@@ -19,27 +19,21 @@ from factories.bond.coupon import CouponFactory
 
 
 
-computation_date = datetime.datetime(2000,5, 17)
+computation_date = datetime.datetime(2000, 5, 17)
 # Bond Parameters
 emission_date = datetime.datetime(1999, 7, 25)
 maturity_date = datetime.datetime(2029, 7, 25)
-time_convention = TimeConvention.ACT_365
+time_convention = TimeConvention.ACT_ACT_ISDA
 coupon_frequency = CouponFactory.Frequency.YEARLY
 inflation_index = "ICP"
 
 
-# dates = pd.date_range("2000-01-01", "2050-01-01", freq= "1MS")
-# powers = np.arange(len(dates)) / 12
+inflation_service = ForcedFixedInflationService()
+# factory = DailyCouponActuarialAmortizationFactory(inflation_service=ForcedFixedInflationService())
 
 factory = ClassicActuarialAmortizationFactory(
     inflation_service= ForcedFixedInflationService(),
-    accrued_coupon_service= LinearAccruedCouponService(),
-    # inflation_service = RecomputeWithPastInflationService(
-    #     {
-    #         "index1" : pd.Series(index = dates, data = 1.02 ** powers),
-    #         "index2" : pd.Series(index = dates, data = 1.03 ** powers)
-    #     }
-    # )
+    accrued_coupon_service= LinearAccruedCouponService()
 )
 
 coupons = CouponFactory().create_coupons(
@@ -47,7 +41,7 @@ coupons = CouponFactory().create_coupons(
     emission_date= emission_date,
     maturity_date=maturity_date,
     frequency=coupon_frequency,
-    adjust_coupons=True,
+    adjust_coupons=False,
     time_convention= time_convention
 )
 
@@ -86,7 +80,7 @@ amortization_profile = bond_position_calculator.compute_amortization_profile()
 
 
 print(f"Amortization : {amortization:0.2f}")
-print(f"Yield Rate : {100*yield_rate:0.2f}%")
+print(f"Yield Rate : {100*yield_rate:0.6f}%")
 
 
 amortization_profile.plot(color = "b")

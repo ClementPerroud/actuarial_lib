@@ -55,8 +55,8 @@ class LinearAmortizationService(AbstractAmortizationService):
 
         return (
             ( total_redemption_price - bond_position.acquisition_clean_price )
-            * bond_position.bond.time_convention_service.year_count(from_dates = np.datetime64(bond_position.acquisition_date, "ns"), to_dates = np.datetime64(date, "ns"))
-            / bond_position.bond.time_convention_service.year_count(from_dates = np.datetime64(bond_position.acquisition_date, "ns"), to_dates = np.datetime64(bond_position.bond.maturity_date, "ns"))
+            * bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates = np.datetime64(bond_position.acquisition_date, "ns"), to_dates = np.datetime64(date, "ns"))
+            / bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates = np.datetime64(bond_position.acquisition_date, "ns"), to_dates = np.datetime64(bond_position.bond.maturity_date, "ns"))
         )
  
     def compute_amortized_price(self, bond_position, date):
@@ -136,7 +136,8 @@ class ActuarialAmortizationService(AbstractAmortizationService):
         cashflow_dates, cashflow_amounts = cashflows.dates, cashflows.amounts
 
         # Compute time powers
-        time_powers = bond_position.bond.time_convention_service.year_count(from_dates= date_np64, to_dates=cashflow_dates)
+        time_powers = bond_position.bond.time_convention_service.year_count(
+            bond_position= bond_position, from_dates= date_np64, to_dates=cashflow_dates)
         
         # Actualize cashflows
         actualized_cashflow = cashflow_amounts / ((1+ bond_position.compute_yield_rate()) ** time_powers)

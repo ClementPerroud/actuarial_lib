@@ -1,5 +1,5 @@
 from classes.time_convention import TimeConvention
-from services.time_convention import TimeConventionActActService, TimeConventionExact365Service, TimeConventionExact360Service, TimeConvention30360Service, TimeConvention30E360Service
+from services.time_convention import TimeConventionActActService, TimeConventionActActISDAService, TimeConventionExact365Service, TimeConventionExact360Service, TimeConvention30360Service, TimeConvention30E360Service
 
 class TimeConventionFactory:
     _time_convention_mapping = {
@@ -8,6 +8,7 @@ class TimeConventionFactory:
         TimeConvention.ACT_360 : TimeConventionExact360Service(),
         TimeConvention._30_360 : TimeConvention30360Service(),
         TimeConvention._30E_360 : TimeConvention30E360Service(),
+        TimeConvention.ACT_ACT_ISDA : TimeConventionActActISDAService()
     }
     def create_time_convention_service(self, time_convention : TimeConvention):
         if time_convention not in self._time_convention_mapping: raise ValueError(f"{time_convention} not found in mapping of time convention in {self.__class__.__name__}")

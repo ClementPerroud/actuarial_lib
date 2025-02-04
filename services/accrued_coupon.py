@@ -37,8 +37,8 @@ class LinearAccruedCouponService(AbstractAccruedCouponService):
         end_date = np.array([end_date], dtype = "datetime64[s]") 
         date =  np.array([date], dtype= 'datetime64[s]')
         return amount * (
-            bond_position.bond.time_convention_service.year_count(from_dates=start_date, to_dates=date)
-            / bond_position.bond.time_convention_service.year_count(from_dates=start_date, to_dates=end_date)
+            bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates=start_date, to_dates=date)
+            / bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates=start_date, to_dates=end_date)
         )[0]
 
 class ActuarialAccruedCouponService(AbstractAccruedCouponService):
@@ -49,8 +49,8 @@ class ActuarialAccruedCouponService(AbstractAccruedCouponService):
         start_date = np.array([start_date], dtype= 'datetime64[s]')
         end_date = np.array([end_date], dtype = "datetime64[s]") 
         date =  np.array([date], dtype= 'datetime64[s]')
-        delta_before_t = bond_position.bond.time_convention_service.year_count(from_dates=start_date, to_dates=date)
-        delta_total =  bond_position.bond.time_convention_service.year_count(from_dates=start_date, to_dates=end_date)
+        delta_before_t = bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates=start_date, to_dates=date)
+        delta_total =  bond_position.bond.time_convention_service.year_count(bond_position= bond_position, from_dates=start_date, to_dates=end_date)
 
 
         return amount *(
